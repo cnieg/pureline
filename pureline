@@ -136,7 +136,7 @@ function background_jobs_segment {
     local bg_color="$1"
     local fg_color="$2"
     local number_jobs
-    number_jobs=$(jobs | grep -cv "Done" | tr -d '[:space:]')
+    number_jobs=$(jobs | grep -c "Running" | tr -d '[:space:]')
     if [ ! "$number_jobs" -eq 0 ]; then
         PS1+="$(segment_end "$fg_color" "$bg_color")"
         PS1+="$(segment_content "$fg_color" "$bg_color" " ${PL_SYMBOLS[background_jobs]} $number_jobs ")"
@@ -266,6 +266,8 @@ function __pureline_post {
     if [ "$PL_ERASE_TO_EOL" = true ]; then
         PS1+="\[\e[K\]"
     fi
+    PS1+="${PL_COLORS[Input_Text]}"
+    trap 'echo -ne "\e[0m"' DEBUG
     unset __last_color
     unset __return_code
 }
